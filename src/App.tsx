@@ -1,26 +1,54 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import "./App.css";
+import CharacterCard from "./components/CharacterCard";
+import { ApiResponse, Character } from "./types";
 
-function App() {
+//Mock = informacion falsa para desarrollar
+// const charactersMock: Character[] = [
+//   {
+//     id: 1,
+//     name: "Rick Sanchez",
+//     status: "Alive",
+//   },
+//   {
+//     id: 2,
+//     name: "Morty Smith",
+//     status: "Alive",
+//   },
+// ];
+
+const App = () => {
+  const [characters, setCharacters] = useState<Character[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const characterReponse = (await fetch(
+        "https://rickandmortyapi.com/api/character"
+      ).then((res) => res.json())) as ApiResponse;
+
+      setCharacters(characterReponse.results);
+    })();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>MiniCodeLab</h1>
+
+      {/* <button
+        onClick={() => {
+          setCharacter(charactersMock);
+        }}
+      ></button> */}
+
+      <ul>
+        {characters.map((character) => {
+          return (
+              <CharacterCard key={character.id} character={character} />
+          );
+        })}
+      </ul>
     </div>
   );
-}
+};
 
 export default App;
